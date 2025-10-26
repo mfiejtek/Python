@@ -1,0 +1,8 @@
+sequence1 = input("Podaj pierwszą sekwencję znaków, oddzielając je spacjami: ").split()
+sequence2 = input("Podaj drugą sekwencję znaków, oddzielając je spacjami: ").split()
+set1 = set(sequence1)
+set2 = set(sequence2)
+common_elements = set1.intersection(set2)
+all_elements = set1.union(set2)
+print("Elementy występujące w obu sekwencjach (bez powtórzeń):", list(common_elements))
+print("Wszystkie elementy z obu sekwencji (bez powtórzeń):", list(all_elements))
