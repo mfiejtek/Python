@@ -18,8 +18,17 @@ class Rectangle:
     def __ne__(self, other):        # obsługa rect1 != rect2
         return not self == other
 
-    def center(self): pass          # zwraca środek prostokąta
-        
-    def area(self): pass            # pole powierzchni
+    def center(self):           # zwraca środek prostokąta
+        return Point((self.pt1.x + self.pt2.x) / 2, (self.pt1.y + self.pt2.y) / 2)
 
-    def move(self, x, y): pass      # przesunięcie o (x, y) 
+    def area(self):             # pole powierzchni
+        width = abs(self.pt2.x - self.pt1.x)
+        height = abs(self.pt2.y - self.pt1.y)
+        return width * height
+
+    def move(self, x, y):     # przesunięcie o (x, y) 
+        self.pt1.x += x
+        self.pt1.y += y
+        self.pt2.x += x
+        self.pt2.y += y
+        return self
