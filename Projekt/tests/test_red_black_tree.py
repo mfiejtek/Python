@@ -8,8 +8,8 @@ PROJECT_ROOT = os.path.dirname(HERE)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from implementation.RedBlackTree import RedBlackTree
-from implementation.Node import RED, BLACK
+from implementation.red_black_tree import RedBlackTree
+from implementation.node import RED, BLACK
 
 class TestRedBlackTree(unittest.TestCase):
 

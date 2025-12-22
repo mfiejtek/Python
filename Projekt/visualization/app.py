@@ -15,8 +15,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from implementation.RedBlackTree import RedBlackTree
-from implementation.Node import RED, BLACK
+from implementation.red_black_tree import RedBlackTree
+from implementation.node import RED, BLACK
 
 class RBTVisualizer:
     """Wizualizator drzewa czerwono-czarnego.

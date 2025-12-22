@@ -4,7 +4,7 @@ Klasa dostarcza metody do wstawiania i usuwania elementów oraz pomocnicze
 operacje potrzebne do utrzymania własności drzewa.
 """
 
-from implementation.Node import BLACK, RED, Node
+from implementation.node import BLACK, RED, Node
 
 class RedBlackTree:
     """Struktura drzewa czerwono-czarnego z operacjami modyfikującymi.
