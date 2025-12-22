@@ -1,5 +1,12 @@
 import unittest
 import random
+import os
+import sys
+
+HERE = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.dirname(HERE)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from implementation.RedBlackTree import RedBlackTree
 from implementation.Node import RED, BLACK
@@ -16,33 +23,26 @@ class TestRedBlackTree(unittest.TestCase):
         Zwraca 'czarną wysokość' węzła, jeśli poddrzewo jest poprawne.
         Rzuca błąd (AssertionError), jeśli zasady są złamane.
         """
-        # Baza rekurencji: jeśli dotarliśmy do TNULL (liścia)
         if node == self.bst.TNULL:
-            # TNULL jest zawsze czarny
             self.assertEqual(node.color, BLACK, "TNULL musi być czarny")
-            return 1  # Liczymy czarną wysokość jako 1 dla TNULL
+            return 1  
         
-        # 1. Sprawdź konflikt Czerwony-Czerwony
         if node.color == RED:
             self.assertNotEqual(node.parent.color, RED, f"Błąd: Węzeł {node.val} jest CZERWONY i ma CZERWONEGO rodzica")
             self.assertNotEqual(node.left.color, RED, f"Błąd: Węzeł {node.val} jest CZERWONY i ma CZERWONE lewe dziecko")
             self.assertNotEqual(node.right.color, RED, f"Błąd: Węzeł {node.val} jest CZERWONY i ma CZERWONE prawe dziecko")
 
-        # 2. Sprawdź poprawność relacji BST
         if node.left != self.bst.TNULL:
             self.assertTrue(node.left.val <= node.val, f"Błąd BST: Lewe dziecko {node.left.val} > Rodzic {node.val}")
         if node.right != self.bst.TNULL:
             self.assertTrue(node.right.val >= node.val, f"Błąd BST: Prawe dziecko {node.right.val} < Rodzic {node.val}")
 
-        # 3. Rekurencja dla dzieci i obliczanie Czarnej Wysokości
         left_black_height = self._validate_rbt_properties(node.left)
         right_black_height = self._validate_rbt_properties(node.right)
 
-        # 4. Sprawdź, czy czarna wysokość jest taka sama dla obu ścieżek
         self.assertEqual(left_black_height, right_black_height, 
                          f"Naruszenie czarnej wysokości w węźle {node.val}: L={left_black_height}, R={right_black_height}")
 
-        # Zwróć wysokość dla rodzica 
         return left_black_height + (1 if node.color == BLACK else 0)
 
     def validate_tree(self):
@@ -50,7 +50,6 @@ class TestRedBlackTree(unittest.TestCase):
         if self.bst.root == self.bst.TNULL:
             return
         
-        # Korzeń musi być czarny
         self.assertEqual(self.bst.root.color, BLACK, "Korzeń musi być CZARNY")
         self._validate_rbt_properties(self.bst.root)
 
@@ -63,7 +62,7 @@ class TestRedBlackTree(unittest.TestCase):
         """Sprawdza proste wstawienie i kolorowanie korzenia"""
         self.bst.insert(10)
         self.assertEqual(self.bst.root.val, 10)
-        self.assertEqual(self.bst.root.color, BLACK) # Korzeń zawsze czarny
+        self.assertEqual(self.bst.root.color, BLACK)
         self.validate_tree()
 
     def test_insert_rotation_case(self):
@@ -121,6 +120,14 @@ class TestRedBlackTree(unittest.TestCase):
         self.bst.delete_node(20)
         self.validate_tree()
 
+    def test_delete_returns_bool(self):
+        """Sprawdza, że metoda delete_node zwraca True po usunięciu oraz False dla nieistniejącego klucza."""
+        elems = [10, 20, 30]
+        for e in elems:
+            self.bst.insert(e)
+        self.assertTrue(self.bst.delete_node(20))
+        self.assertFalse(self.bst.delete_node(999))
+
     def test_large_random_dataset(self):
         """1000 losowych liczb, wstawianie i usuwanie"""
         data = list(range(1000))
@@ -138,7 +145,7 @@ class TestRedBlackTree(unittest.TestCase):
             self.bst.delete_node(val)
             # Sprawdzanie przy każdym kroku
             self.validate_tree()
-        
+
         self.validate_tree()
 
 if __name__ == '__main__':
