@@ -282,3 +282,19 @@ class RedBlackTree:
             self.fix_delete(x)
         
         return True
+    
+    # --- WYSZUKIWANIE ---
+
+    def search(self, k):
+        """Publiczna metoda wyszukiwania."""
+        return self._search_tree_helper(self.root, k)
+
+    def _search_tree_helper(self, node, key):
+        """Rekurencyjne przeszukiwanie drzewa."""
+        if node == self.TNULL or key == node.val:
+            return node
+
+        if key < node.val:
+            return self._search_tree_helper(node.left, key)
+        
+        return self._search_tree_helper(node.right, key)

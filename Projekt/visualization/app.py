@@ -6,6 +6,7 @@ węzłów oraz do wizualnego odzwierciedlenia struktury i kolorów drzewa.
 
 import tkinter as tk
 from tkinter import messagebox
+import random
 import sys
 import os
 
@@ -33,6 +34,8 @@ class RBTVisualizer:
         self.node_radius = 20
         self.y_dist = 60 
 
+        self.highlight_node = None
+
         self.main_frame = tk.Frame(root)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -47,6 +50,9 @@ class RBTVisualizer:
         self.entry = tk.Entry(self.controls_frame)
         self.entry.pack(side=tk.LEFT, padx=5)
         self.entry.bind('<Return>', lambda event: self.add_node())  # Dodawanie enterem
+
+        btn_search = tk.Button(self.controls_frame, text="Szukaj", command=self.search_node, bg="#ffffcc") # Żółty przycisk
+        btn_search.pack(side=tk.LEFT, padx=5)
 
         btn_insert = tk.Button(self.controls_frame, text="Dodaj (Insert)", command=self.add_node, bg="#ccffcc")
         btn_insert.pack(side=tk.LEFT, padx=5)
@@ -66,7 +72,6 @@ class RBTVisualizer:
 
     def generate_random_tree(self):
         """Generuje drzewo z losową liczbą węzłów (5-15) i wartościami 1-100, następnie odświeża widok."""
-        import random
         n = random.randint(5, 15)
         values = random.sample(range(1, 101), n)
         self.tree = RedBlackTree()
@@ -109,6 +114,38 @@ class RBTVisualizer:
         self.tree = RedBlackTree()
         self.draw_tree()
 
+    def search_node(self):
+        """Wyszukuje wprowadzoną wartość i podświetla znaleziony węzeł.
+
+        Jeśli węzeł zostanie znaleziony, jest podświetlany na 2 sekundy.
+        Jeśli nie znaleziono węzła — wyświetlany jest komunikat informacyjny.
+        W przypadku niepoprawnego wejścia (nie-integer) pokazuje się komunikat o błędzie.
+        """
+        try:
+            val_str = self.entry.get()
+            if not val_str:
+                return
+            val = int(val_str)
+            
+            found_node = self.tree.search(val)
+            
+            if found_node != self.tree.TNULL:
+                self.highlight_node = found_node
+                self.draw_tree()
+                self.root.after(2000, self.clear_highlight)
+            else:
+                messagebox.showinfo("Wynik", f"Klucz {val} nie został znaleziony.")
+                self.highlight_node = None
+                self.draw_tree()
+                
+        except ValueError:
+            messagebox.showerror("Błąd", "Wprowadź liczbę całkowitą!")
+
+    def clear_highlight(self):
+        """Usuwa podświetlenie (jeśli istnieje) i odświeża widok."""
+        self.highlight_node = None
+        self.draw_tree()
+
     # --- LOGIKA RYSOWANIA ---
 
     def draw_tree(self):
@@ -136,9 +173,15 @@ class RBTVisualizer:
 
         r = self.node_radius
         color = "red" if node.color == RED else "black"
-        outline = "black"
-                
-        self.canvas.create_oval(x - r, y - r, x + r, y + r, fill=color, outline=outline, width=2)
+        
+        if node == self.highlight_node:
+            outline_color = "#00FF00"
+            outline_width = 5
+        else:
+            outline_color = "black"
+            outline_width = 2
+
+        self.canvas.create_oval(x - r, y - r, x + r, y + r, fill=color, outline=outline_color, width=outline_width)
 
         text_color = "white"
         self.canvas.create_text(x, y, text=str(node.val), fill=text_color, font=("Arial", 10, "bold"))

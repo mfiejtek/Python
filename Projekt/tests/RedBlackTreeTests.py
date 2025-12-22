@@ -137,16 +137,35 @@ class TestRedBlackTree(unittest.TestCase):
         for val in data:
             self.bst.insert(val)
         
-        self.validate_tree() # Sprawdź poprawność całego dużego drzewa
-        
-        # 2. Usuwanie losowych 200 elementów
+        self.validate_tree() 
+
         to_delete = data[:200]
         for val in to_delete:
             self.bst.delete_node(val)
-            # Sprawdzanie przy każdym kroku
             self.validate_tree()
 
         self.validate_tree()
+
+    def test_search_functionality(self):
+        """Testuje wyszukiwanie istniejących i nieistniejących kluczy."""
+        self.bst.insert(50)
+        self.bst.insert(30)
+        self.bst.insert(70)
+        
+        result = self.bst.search(50)
+        self.assertNotEqual(result, self.bst.TNULL, "Powinien znaleźć węzeł 50")
+        self.assertEqual(result.val, 50)
+        
+        result = self.bst.search(30)
+        self.assertNotEqual(result, self.bst.TNULL, "Powinien znaleźć węzeł 30")
+        self.assertEqual(result.val, 30)
+
+        result = self.bst.search(999)
+        self.assertEqual(result, self.bst.TNULL, "Nie powinien znaleźć węzła 999")
+        
+        self.bst = RedBlackTree() # Reset
+        result = self.bst.search(10)
+        self.assertEqual(result, self.bst.TNULL, "W pustym drzewie wynik powinien być TNULL")
 
 if __name__ == '__main__':
     unittest.main()
