@@ -249,8 +249,7 @@ class RedBlackTree:
                 node = node.left
 
         if z == self.TNULL:
-            print("Nie znaleziono klucza")
-            return
+            return False
 
         y = z
         y_original_color = y.color
@@ -281,3 +280,5 @@ class RedBlackTree:
 
         if y_original_color == BLACK:
             self.fix_delete(x)
+        
+        return True
