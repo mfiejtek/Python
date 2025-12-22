@@ -1,6 +1,4 @@
-import sys
-
-from Node import BLACK, RED, Node
+from implementation.Node import BLACK, RED, Node
 
 class RedBlackTree:
     def __init__(self):
@@ -138,40 +136,35 @@ class RedBlackTree:
             node = node.left
         return node
 
-    # --- NAPRAWA PO USUNIĘCIU (FIX-DELETE) ---
+    # --- NAPRAWA PO USUNIĘCIU  ---
 
     def fix_delete(self, x):
         while x != self.root and x.color == BLACK:
             if x == x.parent.left:
-                w = x.parent.right  # Brat (sibling)
+                w = x.parent.right 
                 
-                # Przypadek 1: Brat jest czerwony
                 if w.color == RED:
                     w.color = BLACK
                     x.parent.color = RED
                     self.left_rotate(x.parent)
                     w = x.parent.right
                 
-                # Przypadek 2: Oba dzieci brata są czarne
                 if w.left.color == BLACK and w.right.color == BLACK:
                     w.color = RED
                     x = x.parent
                 else:
-                    # Przypadek 3: Prawe dziecko brata jest czarne (lewe czerwone)
                     if w.right.color == BLACK:
                         w.left.color = BLACK
                         w.color = RED
                         self.right_rotate(w)
                         w = x.parent.right
                     
-                    # Przypadek 4: Prawe dziecko brata jest czerwone
                     w.color = x.parent.color
                     x.parent.color = BLACK
                     w.right.color = BLACK
                     self.left_rotate(x.parent)
                     x = self.root
             else:
-                # Lustrzane odbicie powyższego (x jest prawym dzieckiem)
                 w = x.parent.left
                 
                 if w.color == RED:
@@ -204,7 +197,6 @@ class RedBlackTree:
         return self._delete_node_helper(self.root, val)
 
     def _delete_node_helper(self, node, key):
-        # 1. Znajdź węzeł z
         z = self.TNULL
         while node != self.TNULL:
             if node.val == key:
@@ -222,7 +214,7 @@ class RedBlackTree:
         y_original_color = y.color
         x = None
 
-        # 2. Standardowe usuwanie BST
+        # Standardowe usuwanie BST
         if z.left == self.TNULL:
             x = z.right
             self.rb_transplant(z, z.right)
@@ -230,7 +222,6 @@ class RedBlackTree:
             x = z.left
             self.rb_transplant(z, z.left)
         else:
-            # Przypadek: węzeł ma dwoje dzieci. Szukamy następcy.
             y = self.minimum(z.right)
             y_original_color = y.color
             x = y.right
@@ -246,6 +237,5 @@ class RedBlackTree:
             y.left.parent = y
             y.color = z.color
 
-        # 3. Jeśli usunięty (lub przeniesiony) kolor był Czarny, musimy naprawić drzewo
         if y_original_color == BLACK:
             self.fix_delete(x)
